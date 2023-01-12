@@ -18,13 +18,13 @@ class AuthController extends BaseController
         }
 
         $db = new Users;
-        $user  = $db->where('username', $this->request->getVar('username'))->first();
+        $user  = $db->where('username', $this->request->getVar('username'))->first("array");
         if ($user) {
             if (password_verify($this->request->getVar('password'), $user['password'])) {
                 $jwt = new JWTCI4;
                 $token = $jwt->token();
 
-                return $this->response->setJSON(['token' => $token]);
+                return $this->response->setJSON(array_merge($user, ['token' => $token]));
             }
         } else {
 
