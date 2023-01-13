@@ -31,7 +31,7 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
-$routes->group('api', ["filter" => "cors", "auth"],  function ($routes) {
+$routes->group('api', ["filter" => ['auth', 'cors']],  function ($routes) {
     $routes->get('users', 'Api\UserController::index');
     $routes->post('users', 'Api\UserController::create');
     $routes->get('users/(:num)', 'Api\UserController::show/$1');

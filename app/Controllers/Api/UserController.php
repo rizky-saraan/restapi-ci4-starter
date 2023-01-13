@@ -49,7 +49,6 @@ class UserController extends BaseController
     {
         $db = new Users;
         $user = $db->where('id', $id)->first();
-
         return $this->response->setJSON(['success' => true, 'message' => 'User Obtained', 'data' => $user]);
     }
 

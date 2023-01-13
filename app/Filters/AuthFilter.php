@@ -2,10 +2,13 @@
 
 namespace App\Filters;
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use App\Libraries\JWTCI4;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
+use Exception;
 
 class AuthFilter implements FilterInterface
 {
@@ -26,20 +29,28 @@ class AuthFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!$request->getHeader('Authorization')) {
+        $key = getenv("jwt.secretkey");
+        $header = $request->getHeader("Authorization");
+        $token = null;
+
+        //extract token from header
+        if (!empty($header) && (preg_match('/Bearer\s(\S+)/', $header, $matches))) {
+            $token = $matches[1];
+        }
+
+        //check if token is null and empty
+        if (is_null($token) || empty($token)) {
             $response = service('response');
-            $response->setJSON(['success' => false, 'message' => 'Unauthorized. Token is required!']);
+            $response->setBody("Access Denied");
             $response->setStatusCode(401);
             return $response;
         }
 
-        //validasi JWT
-        $token = $request->getHeader('Authorization');
-        $jwt = new JWTCI4;
-        $verifiy = $jwt->parse($token);
-        if (!$verifiy['success']) {
+        try {
+            $decode = JWT::decode($token, new Key($key, "HS256"));
+        } catch (Exception $e) {
             $response = service('response');
-            $response->setJSON($verifiy);
+            $response->setBody("Access Denied");
             $response->setStatusCode(401);
             return $response;
         }
