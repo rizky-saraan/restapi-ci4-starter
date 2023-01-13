@@ -39,7 +39,8 @@ $routes->group('api', ["filter" => "cors", "auth"],  function ($routes) {
     $routes->delete('users/(:num)', 'Api\UserController::delete/$1');
 });
 
-$routes->post('api/users/token', 'Api\AuthController::login', ['filter' => 'cors']);
+$routes->post('api/login', 'Api\AuthController::login', ['filter' => 'cors']);
+$routes->post('api/register', 'Api\AuthController::register', ['filter' => 'cors']);
 
 /*
  * --------------------------------------------------------------------

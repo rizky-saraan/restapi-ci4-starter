@@ -10,6 +10,8 @@ class UserController extends BaseController
 {
     use ResponseTrait;
 
+
+
     public function index()
     {
         $db = new Users;
