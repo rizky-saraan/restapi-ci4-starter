@@ -4,10 +4,13 @@ namespace App\Controllers\Api;
 
 use App\Models\Users;
 use App\Libraries\JWTCI4;
+use CodeIgniter\API\ResponseTrait;
 use App\Controllers\BaseController;
 
 class AuthController extends BaseController
 {
+    use ResponseTrait;
+
     public function login()
     {
         if (!$this->validate([
@@ -24,7 +27,9 @@ class AuthController extends BaseController
                 $jwt = new JWTCI4;
                 $token = $jwt->token();
 
-                return $this->response->setJSON(array_merge($user, ['token' => $token]));
+                return $this->response->setJSON(['success' => false, 'message' => 'Data obtained', 'token' => $token, 'user' => $user]);
+            } else {
+                return $this->response->setJSON(['success' => false, 'message' => 'The password you entered is incorrect'])->setStatusCode(409);
             }
         } else {
 

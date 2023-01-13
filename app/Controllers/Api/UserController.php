@@ -14,13 +14,13 @@ class UserController extends BaseController
     {
         $db = new Users;
         $user = $db->get()->getResult();
-        return $this->response->setJSON(['sucess' => true, 'mesage' => 'OK', 'data' => $user]);
+        return $this->response->setJSON(['sucess' => true, 'message' => 'Data User Available', 'data' => $user]);
     }
 
     public function create()
     {
         if (!$this->validate([
-            'username'     => 'required|is_unique[m_users.username]',
+            'username'     => 'required|is_unique[users.username]',
             'password'     => 'required|min_length[6]',
             'name'           => 'required',
             'address'    => 'required',
@@ -33,14 +33,14 @@ class UserController extends BaseController
             'username' => $this->request->getVar('username'),
             'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
             'name' => $this->request->getVar('name'),
-            'naaddressme' => $this->request->getVar('address'),
+            'address' => $this->request->getVar('address'),
             'phone' => $this->request->getVar('phone'),
         ];
 
         $db = new Users;
         $save  = $db->insert($insert);
 
-        return $this->setResponseFormat('json')->respondCreated(['sucess' => true, 'mesage' => 'OK']);
+        return $this->setResponseFormat('json')->respondCreated(['success' => true, 'message' => 'User Created']);
     }
 
     public function show($id)
@@ -48,13 +48,13 @@ class UserController extends BaseController
         $db = new Users;
         $user = $db->where('id', $id)->first();
 
-        return $this->response->setJSON(['sucess' => true, 'mesage' => 'OK', 'data' => $user]);
+        return $this->response->setJSON(['success' => true, 'message' => 'User Obtained', 'data' => $user]);
     }
 
     public function update($id)
     {
         if (!$this->validate([
-            'username' => 'permit_empty|is_unique[m_users.username,id,' . $id . ']',
+            'username' => 'permit_empty|is_unique[users.username,id,' . $id . ']',
             'password' => 'permit_empty|min_length[6]',
             'name' => 'permit_empty',
             'address' => 'permit_empty',
@@ -81,15 +81,13 @@ class UserController extends BaseController
         $db = new Users;
         $save  = $db->update($id, $update);
 
-        return $this->response->setJSON(['success' => true, 'message' => 'OK']);
+        return $this->response->setJSON(['success' => true, 'message' => 'User Updated']);
     }
 
     public function delete($id)
     {
         $db = new Users;
-        $db->where('id', $id);
-        $db->delete();
-
-        return $this->response->setJSON(['sucess' => true, 'mesage' => 'OK']);
+        $db->where('id', $id)->delete();
+        return $this->response->setJSON(['success' => true, 'message' => 'User Deleted']);
     }
 }
